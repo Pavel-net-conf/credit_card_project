@@ -1,7 +1,7 @@
   version: '3.8'
 
 services:
-  # Наш Flask ML-сервис прогнозирования дефолта
+  #  Flask ML-сервис прогнозирования дефолта
   ml_service:
     build:
       context: .
