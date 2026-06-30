@@ -1,0 +1,30 @@
+  version: '3.8'
+
+services:
+  # Наш Flask ML-сервис прогнозирования дефолта
+  ml_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: credit-card-service:latest
+    container_name: credit_ml_app
+    # Внутренний порт Flask 5000 сопоставляем с портом 5000 хост-машины
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./models:/app/models  # Монтируем папку с моделями для удобного обновления без пересборки образа
+    environment:
+      - ENV=production
+    restart: always
+
+  # Бонусный контейнер NGINX в качестве Reverse Proxy (выполняет требование Части 1 и 3)
+  nginx_proxy:
+    image: nginx:alpine
+    container_name: nginx_balancer
+    ports:
+      - "80:80"  # Пробрасываем стандартный веб-порт наружу
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Подкладываем файл конфигурации проксирования
+    depends_on:
+      - ml_service
+    restart: always
