@@ -37,14 +37,14 @@ def predict():
             
         features = data['features']
         
-        # Получаем версию модели из query-параметров (?version=v1 или ?version=v2)
+        # Получаем версию модели из query-параметров 
         version = request.args.get('version', 'v1')
         model = load_model(version)
         
         if model is None:
             return jsonify({"error": f"model version '{version}' not found"}), 404
             
-        # Инференс модели. Заворачиваем в список, если передан один вектор признаков
+        # Заворачиваем в список, если передан один вектор признаков
         input_data = [features] if not isinstance(features[0], list) else features
         
         prediction = model.predict(input_data)[0]
