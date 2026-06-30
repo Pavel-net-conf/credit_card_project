@@ -22,3 +22,48 @@ credit_card_project/
 ├── docker-compose.yml  # Оркестрация мультиконтейнерной связки (ML-сервис + NGINX)
 ├── nginx.conf          # Конфигурация для NGINX Reverse Proxy
 └── requirements.txt    # Список внешних Python-зависимостей проекта
+```
+
+
+
+## 🛠 Инструкция по запуску в локальном виртуальном окружении
+
+### 1. Настройка окружения ( virtualenv / venv )
+В соответствии с требованиями к воспроизводимости, проект запускается в изолированном виртуальном окружении:
+```bash
+# Создание виртуального окружения
+python -m venv venv
+
+# Активация окружения (Windows)
+.\venv\Scripts\activate
+
+# Активация окружения (Linux/Mac)
+source venv/bin/activate
+
+# Установка зависимостей проекта
+pip install -r requirements.txt
+```
+
+Запуск веб-сервиса
+```Bash
+python app/api.py
+```
+
+После выполнения команды Flask-сервер начнет принимать входящие запросы в реальном времени по адресу http://127.0.0.1:5000.
+
+Спецификация API и Примеры запросов (cURL)
+1. Проверка работоспособности сервиса (GET /health)
+```Bash
+   curl [http://127.0.0.1:5000/health](http://127.0.0.1:5000/health)
+```
+Ожидаемый ответ:``` {"service":"credit_card_default_pred","status":"healthy"}```
+
+2.Скоринг клиента на контрольной модели ```v1 (POST /predict?version=v1) ```
+```
+curl -X POST [http://127.0.0.1:5000/predict?version=v1](http://127.0.0.1:5000/predict?version=v1) \
+-H "Content-Type: application/json" \
+-d "{\"features\": [20000, 2, 2, 1, 24, 2, 2, -1, -1, -2, -2, 3913, 3102, 0, 0, 0, 0, 0, 689, 0, 0, 0, 0]}"
+```
+Ответ: ```{"default_prediction":1,"model_version":"v1","probability":0.7754177815762832,"status":"success"}   ```
+
+
